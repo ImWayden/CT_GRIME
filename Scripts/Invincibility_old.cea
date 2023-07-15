@@ -1,0 +1,55 @@
+
+  Game   : GRIME
+  Version: 
+  Date   : 2023-07-11
+  Author : Wayden
+
+  This script gives invincibilty + InfStam, since i "hooked" it to an persitent update method
+  i reset to original code right after activation since i dont need to have it running 
+  then i kinda inject in my own code to reverse the modification when deactivated
+  you have to activate GetPlayerPointer first for it to work correctly
+
+
+[ENABLE]
+
+define(Setinvincible,Character_CustomModule:PersistentUpdate) // should be unique
+define(ResetBytes,Adress+A1)
+registersymbol(Setinvincible)
+registersymbol(ResetBytes)
+
+
+ResetBytes:
+  db 48 83 EC 08 48 83 C4 08
+
+Adress+50:
+  push rax
+  mov rax, qword ptr[PlayerBase]
+  add rax, 2A1
+  mov byte ptr [rax], 01
+  mov rax, qword ptr[ResetBytes]
+  mov qword [Setinvincible], rax
+  pop rax
+  jmp Setinvincible
+
+Setinvincible:
+  jmp Adress+50
+  nop
+  nop
+  nop
+
+[DISABLE]
+
+Adress+5E:
+  mov byte ptr [rax], 00
+
+Setinvincible:
+  jmp Adress+50
+  nop
+  nop
+  nop
+
+unregistersymbol(Setinvincible)
+unregistersymbol(ResetBytes)
+
+
+// ORIGINAL CODE - INJECTION POINT: Character_CustomModule:PersistentUpdate

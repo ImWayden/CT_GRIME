@@ -1,0 +1,42 @@
+{ Game   : GRIME
+  Version: 
+  Date   : 2023-07-11
+  Author : wayden
+
+  This script makes you IgnoreHit so you won't be interrupted by ennemies
+  but you'll still take damage
+}
+
+[ENABLE]
+
+FT_SetInvincible:
+  push rax
+  mov rax,[CharacterHandler]
+  add rax, 300
+  mov [rax], 0xbf800000
+  pop rax
+  jmp FT_ResetUpdFunc
+
+UpdateFunction:
+  jmp FT_SetInvincible
+  nop
+  nop
+  nop
+
+[DISABLE]
+FT_SetInvincible:
+  push rax
+  mov rax,[CharacterHandler]
+  add rax, 300
+  mov [rax], 0
+  pop rax
+  jmp FT_ResetUpdFunc
+
+UpdateFunction:
+  jmp FT_SetInvincible
+  nop
+  nop
+  nop
+
+// ORIGINAL CODE - INJECTION POINT: Character_CustomModule:PersistentUpdate
+

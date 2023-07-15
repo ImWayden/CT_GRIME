@@ -1,0 +1,79 @@
+{ Game   : GRIME
+  Version: 
+  Date   : 2023-07-12
+  Author : Wayden
+
+  This script Sets PlayerPhysicalPower to 9000 so it should One Shot everything
+  + it Active the GameObject so you have an indicator ingame
+}
+
+[ENABLE]
+
+FT_OneHitKill:
+  push rsi
+  push rax
+  push rcx
+  push rdx
+  push r11
+  mov rax,GameHandler:ToggleGodMode+1d0 //variable float 9000
+  movss xmm0,[rax]
+  mov rax,[CombatModule]
+  add rax,30
+  cvtss2sd xmm0,xmm0
+  cvtsd2ss xmm5,xmm0
+  movss [rax],xmm5
+  mov rsi, [GamePointer]
+  mov rax, [UIPlayerHud]
+  mov rcx,rax
+  mov edx,01
+  cmp dword ptr [rax],00
+  mov r11,UI_PlayerHud:ToggleExtraPowerMode
+  call r11
+  pop r11
+  pop rdx
+  pop rcx
+  pop rax
+  pop rsi
+  jmp FT_ResetUpdFunc
+
+UpdateFunction:
+  jmp FT_OneHitKill
+  nop
+  nop
+  nop
+
+[DISABLE]
+
+FT_OneHitKill:
+  push rsi
+  push rax
+  push rcx
+  push rdx
+  push r11
+  mov rax, [CombatModule]
+  add rax,30
+  mov [rax],0
+  mov rsi, [GamePointer]
+  mov rax, [UIPlayerHud]
+  mov rcx,rax
+  xor edx,edx
+  cmp dword ptr [rax],00
+  mov r11,UI_PlayerHud:ToggleExtraPowerMode
+  call r11
+  pop r11
+  pop rdx
+  pop rcx
+  pop rax
+  pop rsi
+  jmp FT_ResetUpdFunc
+
+UpdateFunction:
+  jmp FT_OneHitKill
+  nop
+  nop
+  nop
+
+
+
+
+

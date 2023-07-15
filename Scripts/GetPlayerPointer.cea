@@ -1,0 +1,57 @@
+  Game   : GRIME
+  Version: 
+  Date   : 2023-07-11
+  Author : Wayden
+
+  //This script find pointer to player Struct, you have to press escape ingame once you activated it 
+  //and it will work perfectly 
+
+
+[ENABLE]
+
+//aobscan(GetPlayerPointer,80 98 00 00 00 48 8B C8 83 39 00 F3 0F 10 40 20 F3 0F 5A C0 F2 0F 5A E8 F3 0F 11 6D CC) // should be unique
+define(GetPlayerPointer,GUI_Menu_InventoryHandler:UpdateStats+39d) //better way to find injection point
+alloc(Adress,$1000,GetPlayerPointer)
+alloc(Player,8)
+alloc(PlayerBase,8)
+label(code)
+label(return)
+
+registersymbol(GetPlayerPointer)
+registersymbol(Player)
+registersymbol(PlayerBase)
+registersymbol(Adress)
+Adress:
+
+code:
+  cmp dword ptr [rcx],00
+  movss xmm0,[rax+20]
+  mov [Player], rcx
+  mov rbx, qword ptr [Player]
+  mov rbx, [rbx+18]
+  mov [PlayerBase], rbx
+  jmp return
+
+GetPlayerPointer:
+  jmp Adress
+  nop
+  nop
+  nop
+return:
+registersymbol(GetPlayerPointer)
+registersymbol(Player)
+registersymbol(PlayerBase)
+
+[DISABLE]
+
+GetPlayerPointer:
+  db 83 39 00 F3 0F 10 40 20
+
+unregistersymbol(GetPlayerPointer)
+unregistersymbol(Player)
+unregistersymbol(PlayerBase)
+dealloc(Adress)
+dealloc(Player)
+dealloc(PlayerBase)
+
+// ORIGINAL CODE - INJECTION POINT: GUI_Menu_InventoryHandler:UpdateStats+39d

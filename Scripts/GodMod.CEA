@@ -1,0 +1,97 @@
+{ Game   : GRIME
+  Version: 
+  Date   : 2023-07-11
+  Author : wayden
+
+  This script Activate GodMode + indicator
+}
+
+[ENABLE]
+
+FT_SetInvincible:
+  push rsi
+  push rax
+  push rcx
+  push rdx
+  push r11
+  mov rax, qword ptr[CharacterHandler]
+  add rax, 2A1
+  mov byte ptr [rax], 01
+  mov rsi, [GamePointer]
+  mov rax, [UIPlayerHud]
+  mov rcx,rax
+  mov edx,01
+  cmp dword ptr [rax],00
+  mov r11,UI_PlayerHud:ToggleInvincibleIndicator
+  call r11
+  pop r11
+  pop rdx
+  pop rcx
+  pop rax
+  pop rsi
+  jmp FT_ResetUpdFunc
+
+UpdateFunction:
+  jmp FT_SetInvincible
+  nop
+  nop
+  nop
+
+[DISABLE]
+
+FT_SetInvincible:
+  push rsi
+  push rax
+  push rcx
+  push rdx
+  push r11
+  mov rax, qword ptr[CharacterHandler]
+  add rax, 2A1
+  mov byte ptr [rax], 00
+  mov rsi, [GamePointer]
+  mov rax, [UIPlayerHud]
+  mov rcx,rax
+  mov edx,00
+  cmp dword ptr [rax],00
+  mov r11,UI_PlayerHud:ToggleInvincibleIndicator
+  call r11
+  pop r11
+  pop rdx
+  pop rcx
+  pop rax
+  pop rsi
+  jmp FT_ResetUpdFunc
+
+UpdateFunction:
+  jmp FT_SetInvincible
+  nop
+  nop
+  nop
+
+{
+// ORIGINAL CODE - INJECTION POINT: Character_CustomModule:PersistentUpdate
+
+2036D92C8E9: 04 02           - add al,02
+2036D92C8EB: 05 04 03 01 50  - add eax,50010304
+2036D92C8F0: 00 00           - add [rax],al
+2036D92C8F2: 00 00           - add [rax],al
+2036D92C8F4: 00 00           - add [rax],al
+2036D92C8F6: 00 00           - add [rax],al
+2036D92C8F8: 00 00           - add [rax],al
+2036D92C8FA: 00 00           - add [rax],al
+2036D92C8FC: 00 00           - add [rax],al
+2036D92C8FE: 00 00           - add [rax],al
+// ---------- INJECTING HERE ----------
+Character_CustomModule:PersistentUpdate: 48 83 EC 08     - sub rsp,08
+// ---------- DONE INJECTING  ----------
+Character_CustomModule:PersistentUpdate+4: 48 83 C4 08     - add rsp,08
+Character_CustomModule:PersistentUpdate+8: C3              - ret 
+2036D92C909: 00 00           - add [rax],al
+2036D92C90B: 00 00           - add [rax],al
+2036D92C90D: 00 00           - add [rax],al
+2036D92C90F: 00 01           - add [rcx],al
+2036D92C911: 04 01           - add al,01
+2036D92C913: 00 04 02        - add [rdx+rax],al
+2036D92C916: 00 00           - add [rax],al
+2036D92C918: 00 00           - add [rax],al
+}

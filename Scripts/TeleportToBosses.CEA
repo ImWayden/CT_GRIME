@@ -1,0 +1,34 @@
+{ Game   : GRIME
+  Version: 
+  Date   : 2023-07-14
+  Author : Wayden
+
+  This script let you teleport to main bosses there is eleven in total starting
+  at index 0 you'll have to add IndexTP to your cheat table in order to choose
+  where you wanna go
+}
+{$lua}
+if not syntaxcheck then
+ synchronize(createTimer,50,memrec.setActive,false)
+end
+{$asm}
+
+
+[ENABLE]
+
+FT_GiveItem:
+  mov rcx,rsi
+  lea rbp,[rbp]
+  mov edx,[IndexTP]
+  mov r11,GameHandler:TeleportToBoss
+  call r11
+  jmp FT_ResetFunc
+
+InjectionPoint:
+  jmp FT_GiveItem
+
+[DISABLE]
+
+
+// ORIGINAL CODE - INJECTION POINT: InjectionPoint
+

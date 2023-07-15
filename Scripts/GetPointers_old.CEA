@@ -1,0 +1,87 @@
+{ Game   : GRIME
+  Version: 
+  Date   : 2023-07-12
+  Author : minat
+
+  This script Find and set pointers used in other scripts + alloc the memory
+  used for all the scripts
+}
+
+[ENABLE]
+
+define(GetPointers,CharacterMovementHandler:get_getOnGround+f)//should be unique
+alloc(FT_GetPointers,$1000,GetPointers)
+define(CharacterData,FT_GetPointers+900)
+define(CharacterHandler,FT_GetPointers+908)
+define(EquipementHandler,FT_GetPointers+910)
+define(MovementHandler,FT_GetPointers+918)
+define(MovementModule,FT_GetPointers+920)
+define(CombatModule,FT_GetPointers+928)
+registersymbol(GetPointers)
+registersymbol(FT_GetPointers)
+registersymbol(CharacterData)
+registersymbol(CharacterHandler)
+registersymbol(MovementHandler)
+registersymbol(EquipementHandler)
+registersymbol(MovementModule)
+registersymbol(CombatModule)
+label(playercmp)
+label(code)
+label(return)
+
+FT_GetPointers:
+
+playercmp:
+  lea rbp,[rbp+00000000]
+  cmp dword ptr [rsi+228], 01
+  jne return
+  jmp code
+
+code:
+  push rax
+  push rbx
+  mov rax, rsi
+  mov [MovementHandler], rax
+  mov rax, [rax+58]
+  mov [CharacterData],rax
+  mov rbx, rax
+  mov rax, [rax+A8]
+  mov [MovementModule], rax
+  mov rax, rbx
+  mov rax, [rax+98]
+  mov [CombatModule], rax
+  mov rax, rbx
+  mov rax, [rax+f0]
+  mov [CharacterHandler], rax
+  mov rax, qword ptr [CharacterHandler]
+  mov rax, [rax+128]
+  mov [EquipementHandler], rax
+  pop rbx
+  pop rax
+  jmp return
+
+GetPointers:
+  jmp FT_GetPointers
+  nop
+  nop
+return:
+
+[DISABLE]
+
+GetPointers:
+  db 48 8D AD 00 00 00 00
+
+
+unregistersymbol(Getpointers)
+unregistersymbol(FT_GetPointers)
+unregistersymbol(CharacterData)
+unregistersymbol(CharacterHandler)
+unregistersymbol(MovementHandler)
+unregistersymbol(EquipementHandler)
+unregistersymbol(MovementModule)
+unregistersymbol(CombatModule)
+dealloc(FT_Getpointers)
+
+
+// ORIGINAL CODE - INJECTION POINT: CharacterMovementHandler:get_getOnGround+f
+

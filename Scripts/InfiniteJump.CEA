@@ -1,0 +1,28 @@
+{ Game   : GRIME
+  Version: 
+  Date   : 2023-07-12
+  Author : Wayden
+
+  This script removes the "onground" verification so you can actualy jump even
+  in air but you will still get fall damage
+}
+
+[ENABLE]
+
+define(InfJump,CharacterMovementHandler:Jump+6e) // should be unique
+registersymbol(InfJump)
+
+InfJump:
+  jmp CharacterMovementHandler:Jump+10d
+  nop
+
+[DISABLE]
+
+InfJump:
+  db 0F 85 99 00 00 00
+
+unregistersymbol(InfJump)
+
+// ORIGINAL CODE - INJECTION POINT: CharacterMovementHandler:Jump+6e
+
+

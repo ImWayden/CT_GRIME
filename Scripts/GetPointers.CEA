@@ -1,0 +1,194 @@
+{ Game   : GRIME
+  Version: 
+  Date   : 2023-07-12
+  Author : Wayden
+
+  This script Find and set pointers used in other scripts + alloc the memory
+  used for all the scripts + setup the hook on persistent update function
+  wich is used as an injection point for other scripts
+}
+
+[ENABLE]
+
+define(GetPointers,CharacterMovementHandler:get_getOnGround+f)//should be unique
+
+alloc(FT_GetPointers,$1000,GetPointers)
+define(CharacterData,FT_GetPointers+900)
+define(CharacterHandler,FT_GetPointers+908)
+define(EquipementHandler,FT_GetPointers+910)
+define(MovementHandler,FT_GetPointers+918)
+define(MovementModule,FT_GetPointers+920)
+define(CombatModule,FT_GetPointers+928)
+define(CharacterDataInv,FT_GetPointers+930)
+define(GamePointer,FT_GetPointers+938)
+define(CharacterDataAttr,FT_GetPointers+940)
+
+registersymbol(GetPointers)
+registersymbol(FT_GetPointers)
+registersymbol(CharacterData)
+registersymbol(CharacterHandler)
+registersymbol(MovementHandler)
+registersymbol(EquipementHandler)
+registersymbol(MovementModule)
+registersymbol(CombatModule)
+registersymbol(CharacterDataInv)
+registersymbol(CharacterDataAttr)
+registersymbol(GamePointer)
+
+define(GetGamePointer,GameHandler:UpdateFrame+1c) // should be unique
+define(FT_GetGamePointer,FT_GetPointers+300)
+
+registersymbol(GetGamePointer)
+registersymbol(FT_GetGamePointer)
+
+define(UpdateFunction,Character_CustomModule:PersistentUpdate)
+define(FT_ResetUpdFunc,FT_GetPointers+1C5)
+define(RB_UpdateFunction,FT_ResetUpdFunc-A)
+registersymbol(FT_ResetUpdFunc)
+registersymbol(RB_UpdateFunction)
+registersymbol(UpdateFunction)
+
+define(FT_SetInvincible,FT_GetPointers+1E8)
+registersymbol(FT_SetInvincible)
+
+define(FT_OneHitKill,FT_GetPointers+209)//fin: + 260
+registersymbol(FT_OneHitKill)
+
+define(UIPlayerHud,FT_GetPointers+273)//278
+registersymbol(UIPlayerHud)
+
+define(PlayerController,FT_GetPointers+280)
+registersymbol(PlayerController)
+
+define(FT_GodMode, FT_GetPointers+34F)
+registersymbol(FT_GodMode)
+
+label(playercmp)
+label(code)
+label(return)
+label(return2)
+
+
+FT_GetUIPlayerHud:
+
+FT_GetGamePointer:
+  push rax
+  mov rax, rcx
+  mov qword ptr [GamePointer], rax
+  pop rax
+  mov rsi,rcx
+  xor eax,eax
+  jmp return2
+
+GetGamePointer:
+  jmp FT_GetGamePointer
+return2:
+
+RB_UpdateFunction:
+  db 48 83 EC 08 48 83 C4 08
+
+FT_ResetUpdFunc:
+  push rax
+  mov rax, qword ptr[RB_UpdateFunction]
+  mov qword [UpdateFunction], rax
+  pop rax
+  jmp UpdateFunction
+
+FT_GetPointers:
+
+playercmp:
+  lea rbp,[rbp+00000000]
+  cmp dword ptr [rsi+228], 01
+  jne return
+  jmp code
+
+code:
+  push rax
+  push rbx
+  mov rax, rsi
+  mov [MovementHandler], rax
+  mov rax, [rax+58]
+  mov [CharacterData],rax
+  mov rbx, rax
+  mov rax, [rax+A8]
+  mov [MovementModule], rax
+  mov rax, rbx
+  mov rax, [rax+98]
+  mov [CombatModule], rax
+  mov rax, rbx
+  mov rax, [rax+f0]
+  mov [CharacterHandler], rax
+  mov rax, qword ptr [CharacterHandler]
+  mov rax, [rax+128]
+  mov [EquipementHandler], rax
+  mov r11,PlayerData_Inventory:get_instance
+  call r11
+  mov [CharacterDataInv], rax
+  mov r11,PlayerData_Attributes:get_instance
+  call r11
+  mov [CharacterDataAttr], rax
+  mov rax, [GameHandler:ToggleGodMode+9b]
+  shr rax,10
+  mov rax,[rax]
+  mov qword [UIPlayerHud], rax
+  mov rax, [GameHandler:ToggleGodMode+d4]
+  shr rax,10
+  mov rax,[rax]
+  mov qword [PlayerController], rax
+  pop rbx
+  pop rax
+  jmp return
+
+GetPointers:
+  jmp FT_GetPointers
+  nop
+  nop
+return:
+
+[DISABLE]
+
+GetGamePointer:
+  db 48 8B F1 33 C0
+
+{$Lua}
+if syntaxcheck then return end
+
+for i=memrec.Count-1,0,-1 do
+  memrec[i].Active = false -- deactivate children
+end
+{$Asm}
+
+GetPointers:
+  db 48 8D AD 00 00 00 00
+
+
+unregistersymbol(Getpointers)
+unregistersymbol(FT_GetPointers)
+unregistersymbol(CharacterData)
+unregistersymbol(CharacterHandler)
+unregistersymbol(MovementHandler)
+unregistersymbol(EquipementHandler)
+unregistersymbol(MovementModule)
+unregistersymbol(CombatModule)
+unregistersymbol(CharacterData_Inv)
+dealloc(FT_Getpointers)
+
+
+unregistersymbol(FT_SetInvincible)
+
+unregistersymbol(FT_ResetUpdFunc)
+unregistersymbol(RB_UpdateFunction)
+unregistersymbol(UpdateFunction)
+
+unregistersymbol(FT_OneHitKill)
+
+unregistersymbol(RB_NoFallDamage)
+unregistersymbol(FT_NoFallDamage)
+
+unregistersymbol(GamePointer)
+unregistersymbol(GetGamePointer)
+unregistersymbol(FT_GetGamePointer)
+
+
+// ORIGINAL CODE - INJECTION POINT: CharacterMovementHandler:get_getOnGround+f
+

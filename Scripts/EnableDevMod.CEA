@@ -1,0 +1,100 @@
+{ Game   : GRIME
+  Version: 
+  Date   : 2023-07-13
+  Author : Wayden
+
+  This script remove a condition forcing the game to be in editor mod
+  to be able to launch Testmod + it removes the key bind to press to activate
+  testmod but keeps the else if so doesn't activate itself at everyupdate
+  The goal is to use this method to make easy calls to Cheat methods
+  used by the devs because registers are already set up for it
+  im not gonna make it possible to reset the method to it's original form
+  too much work for no reason
+}
+
+[ENABLE]
+alloc(DevMods,$1000)
+define(RemoveEditor,GameHandler:UpdateFrame+27) // should be unique
+define(RemoveKey,GameHandler:UpdateFrame+503)
+define(ReplaceIf,GameHandler:UpdateFrame+36)
+define(InjectionPoint,GameHandler:UpdateFrame+50c)
+define(RemoveReturn,GameHandler:UpdateFrame+35d)
+define(ReplaceLast,GameHandler:UpdateFrame+4cd)
+
+define(FT_ResetFunc,DevMods+08)
+define(RB_ResetFunc,DevMods+2D)
+define(FT_GiveItem,DevMods+3C)
+
+define(IndexTP,DevMods+1F5)
+define(Index_X,DevMods+205)
+define(Index_Y,DevMods+215)
+define(Index_Z,DevMods+225)
+
+registersymbol(DevMods)
+registersymbol(FT_ResetFunc)
+registersymbol(DevMods)
+registersymbol(RemoveEditor)
+registersymbol(RemoveKey)
+registersymbol(ReplaceLast)
+registersymbol(ReplaceIf)
+registersymbol(InjectionPoint)
+registersymbol(RB_ResetFunc)
+registersymbol(FT_GiveItem)
+registersymbol(Index_X)
+registersymbol(Index_Y)
+registersymbol(Index_Z)
+registersymbol(IndexTP)
+
+IndexTP:
+dd 0
+Index_X:
+db 00 00 00 00 00 00
+Index_Y:
+db 00 00 00 00 00 00
+Index_Z:
+dd 0
+RB_ResetFunc:
+  db 66 0F 1F 84 00 00 00 00 00
+
+FT_ResetFunc:
+  push rax
+  mov rax, qword ptr[RB_ResetFunc]
+  mov qword [InjectionPoint], rax
+  pop rax
+  jmp InjectionPoint
+
+RemoveEditor:
+  nop 6
+
+RemoveKey:
+  nop 36
+  nop 4
+  jmp GameHandler:UpdateFrame+55b
+
+ReplaceIf:
+ je GameHandler:UpdateFrame+53f
+
+RemoveReturn:
+   nop 6
+
+ReplaceLast:
+  jmp InjectionPoint
+
+[DISABLE]
+
+unregistersymbol(RemoveEditor)
+unregistersymbol(EnableDevMod)
+unregistersymbol(ReplaceIf)
+unregistersymbol(DevMods)
+unregistersymbol(ReplaceLast)
+unregistersymbol(RemoveEditor)
+unregistersymbol(RemoveKey)
+unregistersymbol(ReplaceIf)
+unregistersymbol(InjectionPoint)
+unregistersymbol(FT_ResetFunc)
+unregistersymbol(RB_ResetFunc)
+unregistersymbol(FT_GiveItem)
+dealloc(DevMods)
+
+// ORIGINAL CODE - INJECTION POINT: GameHandler:UpdateFrame+27
+

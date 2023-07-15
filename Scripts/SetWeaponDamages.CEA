@@ -1,0 +1,37 @@
+{ Game   : GRIME
+  Version: 
+  Date   : 2023-07-13
+  Author : Wayden
+
+  This script removes the update of weapon damages stats so you can modify it
+  without risking it to be reset by the game when changing equipement
+  can work as a one hit kill if set to high value but not the point
+}
+
+[ENABLE]
+
+define(SetWeaponDamages,CharacterEquipmentHandler:RefreshWeaponPowerStats+84)
+define(SetWeaponDamages2,CharacterEquipmentHandler:RefreshWeaponPowerStats+b2)
+
+registersymbol(SetWeaponDamages)
+registersymbol(SetWeaponDamages2)
+
+SetWeaponDamages2:
+  db 00 00 00 00 00 00 00 00
+
+SetWeaponDamages:
+  db 00 00 00 00 00 00 00 00
+
+[DISABLE]
+
+SetWeaponDamages2:
+  db F3 0F 11 A8 0C 01 00 00
+
+SetWeaponDamages:
+  db F3 0F 11 A8 0C 01 00 00
+
+unregistersymbol(SetWeaponDamages)
+unregistersymbol(SetWeaponDamages2)
+
+// ORIGINAL CODE - INJECTION POINT: CharacterEquipmentHandler:RefreshWeaponPowerStats+84
+// ORIGINAL CODE - INJECTION POINT: CharacterEquipmentHandler:RefreshWeaponPowerStats+b2

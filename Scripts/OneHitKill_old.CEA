@@ -1,0 +1,51 @@
+{ Game   : GRIME
+  Version: 
+  Date   : 2023-07-12
+  Author : Wayden
+
+  This script compare rsi wich contain [CombatModule] of an entity to
+  Your own [CombatModule] then if it's not you it set xmm1 wich is
+  the register containing future entity hp to 0 making it oneshotable
+}
+
+[ENABLE]
+
+define(OneHitKill,Data_Character+CombatModule:set_currentHitPoints+13) // should be unique
+
+
+registersymbol(OneHitKill)
+label(code)
+label(return)
+label(originalcode)
+label(playercmp)
+
+FT_OneHitKill:
+
+playercmp:
+  push rbx
+  mov rbx, rsi
+  cmp rbx, [CombatModule]
+  jne code
+  jmp originalcode
+code:
+  xorps xmm1, xmm1
+  jmp originalcode
+originalcode:
+  pop rbx
+  movss [rbp-20],xmm1
+  jmp return
+
+OneHitKill:
+  jmp FT_OneHitKill
+return:
+
+
+[DISABLE]
+
+OneHitKill:
+  db F3 0F 11 4D E0
+
+unregistersymbol(OneHitKill)
+
+// ORIGINAL CODE - INJECTION POINT: Data_Character+CombatModule:set_currentHitPoints+13
+

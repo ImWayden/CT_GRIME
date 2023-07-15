@@ -1,0 +1,41 @@
+{ Game   : GRIME
+  Version: 
+  Date   : 2023-07-11
+  Author : wayden
+
+  This script let you spam parry removing almost all the cd
+}
+
+[ENABLE]
+
+FT_SetInvincible:
+  push rax
+  mov rax,[PlayerController]
+  add rax, 1C0
+  mov [rax],0
+  pop rax
+  jmp FT_ResetUpdFunc
+
+UpdateFunction:
+  jmp FT_SetInvincible
+  nop
+  nop
+  nop
+
+[DISABLE]
+FT_SetInvincible:
+  push rax
+  mov rax,[PlayerController]
+  add rax, 1C0
+  mov [rax],0x3f266666//hex value for 0.65
+  pop rax
+  jmp FT_ResetUpdFunc
+
+UpdateFunction:
+  jmp FT_SetInvincible
+  nop
+  nop
+  nop
+
+// ORIGINAL CODE - INJECTION POINT: Character_CustomModule:PersistentUpdate
+

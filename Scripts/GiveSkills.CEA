@@ -1,0 +1,32 @@
+{ Game   : GRIME
+  Version: 
+  Date   : 2023-07-14
+  Author : Wayden
+
+  This script Gives Skills like double jump etc.. Usable 2 times
+  for upgrade breath
+}
+{$lua}
+if not syntaxcheck then
+ synchronize(createTimer,50,memrec.setActive,false)
+end
+{$asm}
+
+
+[ENABLE]
+
+FT_GiveItem:
+  mov rcx,rsi
+  lea rbp,[rbp]
+  mov r11,GameHandler:GiveSkills
+  call r11
+  jmp FT_ResetFunc
+
+InjectionPoint:
+  jmp FT_GiveItem
+
+[DISABLE]
+
+
+// ORIGINAL CODE - INJECTION POINT: InjectionPoint
+

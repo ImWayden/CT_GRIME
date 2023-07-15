@@ -1,0 +1,70 @@
+{ Game   : GRIME
+  Version: 
+  Date   : 2023-07-14
+  Author : Wayden
+
+  This script gives you possibility to teleport anywhere but it's actually quite
+  Buggy and if you don't have the cheat i think you'll have to add manually
+  Index_X Index_y and Index_Z to Your cheat table
+}
+{$lua}
+if not syntaxcheck then
+ synchronize(createTimer,5000,memrec.setActive,false)
+end
+{$asm}
+
+
+[ENABLE]
+
+FT_GiveItem:
+  movss xmm2,[Index_X]
+  cvtss2sd xmm2,xmm2
+  movss xmm1,[Index_Y]
+  cvtss2sd xmm1,xmm1
+  movss xmm0,[Index_Z]
+  cvtss2sd xmm0,xmm0
+  cvtsd2ss xmm5,xmm2
+  movss [rbp-5C],xmm5
+  cvtsd2ss xmm5,xmm1
+  movss [rbp-60],xmm5
+  cvtsd2ss xmm5,xmm0
+  movss [rbp-64],xmm5
+  movss xmm0,[rbp-5C]
+  cvtss2sd xmm0,xmm0
+  cvtsd2ss xmm5,xmm0
+  movss [rbp-58],xmm5
+  movss xmm0,[rbp-60]
+  cvtss2sd xmm0,xmm0
+  cvtsd2ss xmm5,xmm0
+  movss [rbp-54],xmm5
+  movss xmm0,[rbp-64]
+  cvtss2sd xmm0,xmm0
+  cvtsd2ss xmm5,xmm0
+  movss [rbp-50],xmm5
+  movsxd  rax,dword ptr [rbp-58]
+  mov [rbp-48],eax
+  movsxd  rax,dword ptr [rbp-54]
+  mov [rbp-44],eax
+  movsxd  rax,dword ptr [rbp-50]
+  mov [rbp-40],eax
+  mov rcx,rsi
+  mov rax,rbp
+  add rax,-38
+  mov rdx,[rbp-48]
+  mov [rbp-38],rdx
+  movsxd  rdx,dword ptr [rbp-40]
+  mov [rbp-30],edx
+  lea rdx,[rax]
+  lea rsp,[rsp+00]
+  mov r11,GameHandler:TeleportToCustomPoint
+  call r11
+  jmp FT_ResetFunc
+
+InjectionPoint:
+  jmp FT_GiveItem
+
+[DISABLE]
+
+
+// ORIGINAL CODE - INJECTION POINT: InjectionPoint
+
