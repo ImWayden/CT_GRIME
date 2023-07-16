@@ -7,7 +7,7 @@
 Im kinda happy with the result for a first Trainer, Lot of things could be upgraded.<br>
 The cheatable does not contain the form nor the lua script and i don't know if i had already added the LaunchMonoDataCollector() inside the scripts.<br>
 The trainer is flagged by antivirus and i have no idea how not to get flagged, i read that i could sign it<br>
-
+Form Designer Really lacks Options
 ## To Do: (i'll probably not)
 -add some polish to the design<br>
 -add more cheats(upgrade ignorehit,spam attack in air,unlock ingame teleport,spike doesn't reset pos,no clip, short range tp)<br>
