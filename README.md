@@ -1,6 +1,6 @@
 # GRIMETrainer
 ![GRIMETrainer1](/img/GRIMETrainer1.png)
-![GRIMETrainer2](/img/GRIMETainer2.png)
+![GRIMETrainer2](/img/GRIMETrainer2.png)
 ![GRIMETrainer3](/img/GRIMETrainer3.png)
 
 ## Comments
