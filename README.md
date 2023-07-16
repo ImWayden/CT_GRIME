@@ -1,7 +1,7 @@
 # GRIMETrainer
-![GRIMETrainer1](/img/GRIMEtrainer1.png)
-![GRIMETrainer2](/img/GRIMEtrainer2.png)
-![GRIMETrainer3](/img/GRIMEtrainer3.png)
+![GRIMETrainer1](/img/GRIMETrainer1.png)
+![GRIMETrainer2](/img/GRIMETainer2.png)
+![GRIMETrainer3](/img/GRIMETrainer3.png)
 
 ## Comments
 Im kinda happy with the result for a first Trainer, Lot of things could be upgraded.
